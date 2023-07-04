@@ -26,7 +26,7 @@ regdate = []
 CAFE_NAME = 'umamusume-kor' 
 REQ_BOARD_NAME = 'ZaXF' 
 
-@st.experimental_memo
+@st.cache_data
 def get_driver():
     return webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
 
@@ -36,51 +36,48 @@ options.add_argument('--headless')
 driver = get_driver()
 
 
+@st.cache_data
+def get_raw_data(driver):
+    page = driver.get(f'https://cafe.daum.net/umamusume-kor/{REQ_BOARD_NAME}')
+    driver.switch_to.frame("down")
+    driver.find_element(By.XPATH,'//*[@id="primaryContent"]/div/div[1]/div[2]/div[3]/div[1]/label').click()
+    time.sleep(2)
+    
+    driver.find_element(By.XPATH,'//*[@id="primaryContent"]/div/div[1]/div[2]/div[3]/div[2]/a').click()
+    time.sleep(2)
+    driver.find_element(By.XPATH,'//*[@id="primaryContent"]/div/div[5]/div[2]/div/div[5]/a').click()
+    time.sleep(2)
+    html = driver.page_source
+    soup = BeautifulSoup(html, 'html.parser') 
+    profile = soup.select('#cafeProfileImage > img')[0]['src']
+    add_logo(profile)
+    post_titles = soup.find_all('a', {'class': 'txt_item'})
+    article_num = soup.find_all('div',{'class':'wrap_num'})
+    views = soup.find_all('span', {'class': 'tbl_txt_look'})
+    rec_counts = soup.find_all('span',{'class':'tbl_txt_recommend'})
+    dates = soup.find_all('td',{'class': 'td_date'})
+    for ele in rec_counts:
+        recomm.append(ele.get_text())
+    
+    for ele in views:
+        clicks.append(ele.get_text())
+    
+    for ele in article_num:
+        article_id.append(ele.get_text())
+    
+    for ele in post_titles:
+        titles.append(ele.get_text())
+    
+    for e in dates:
+        regdate.append(ele.get_text())
+    
+    data = { 'id': article_id, 'titles' : titles, 'recommendations': recomm, 'views': clicks, 'regdate': regdate}
+    
+    df = pd.DataFrame(data)
+    return df 
 
-# options = webdriver.ChromeOptions()
-# driver = webdriver.Chrome(options=options)
+df = get_raw_data(driver)
 
-page = driver.get(f'https://cafe.daum.net/umamusume-kor/{REQ_BOARD_NAME}')
-
-driver.switch_to.frame("down")
-driver.find_element(By.XPATH,'//*[@id="primaryContent"]/div/div[1]/div[2]/div[3]/div[1]/label').click()
-time.sleep(2)
-
-driver.find_element(By.XPATH,'//*[@id="primaryContent"]/div/div[1]/div[2]/div[3]/div[2]/a').click()
-time.sleep(2)
-driver.find_element(By.XPATH,'//*[@id="primaryContent"]/div/div[5]/div[2]/div/div[5]/a').click()
-time.sleep(2)
-
-
-html = driver.page_source
-soup = BeautifulSoup(html, 'html.parser') 
-profile = soup.select('#cafeProfileImage > img')[0]['src']
-add_logo(profile)
-post_titles = soup.find_all('a', {'class': 'txt_item'})
-article_num = soup.find_all('div',{'class':'wrap_num'})
-views = soup.find_all('span', {'class': 'tbl_txt_look'})
-rec_counts = soup.find_all('span',{'class':'tbl_txt_recommend'})
-dates = soup.find_all('td',{'class': 'td_date'})
-
-
-for ele in rec_counts:
-    recomm.append(ele.get_text())
-
-for ele in views:
-    clicks.append(ele.get_text())
-
-for ele in article_num:
-    article_id.append(ele.get_text())
-
-for ele in post_titles:
-    titles.append(ele.get_text())
-
-for e in dates:
-    regdate.append(ele.get_text())
-
-data = { 'id': article_id, 'titles' : titles, 'recommendations': recomm, 'views': clicks, 'regdate': regdate}
-
-df = pd.DataFrame(data)
 
 # Streamlit UI 
 st.title('우마무스메 공식카페 분석')
