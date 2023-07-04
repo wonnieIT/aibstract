@@ -25,7 +25,7 @@ CAFE_NAME = 'umamusume-kor'
 
 REQ_BOARD_NAME = 'ZaXF' 
 
-driver = webdriver.Chrome('./../chromedriver')
+driver = webdriver.Chrome()
 
 page = driver.get(f'https://cafe.daum.net/umamusume-kor/{REQ_BOARD_NAME}')
 
