@@ -1,0 +1,7 @@
+streamlit
+pandas
+streamlit-extras
+selenium
+bs4
+openai
+st_pages
