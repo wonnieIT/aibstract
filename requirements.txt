@@ -6,3 +6,4 @@ bs4
 openai
 st_pages
 webdriver-manager
+seleniumbase
