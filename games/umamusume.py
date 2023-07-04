@@ -26,7 +26,7 @@ regdate = []
 CAFE_NAME = 'umamusume-kor' 
 REQ_BOARD_NAME = 'ZaXF' 
 
-@st.experimental_singleton
+@st.experimental_memo
 def get_driver():
     return webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
 
