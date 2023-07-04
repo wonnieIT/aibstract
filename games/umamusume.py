@@ -17,14 +17,6 @@ with st.spinner('Loading.. Data...'):
 st.success('Done!')
 
 
-recomm =[]
-titles = []
-clicks = []
-article_id = []
-regdate = []
-
-CAFE_NAME = 'umamusume-kor' 
-REQ_BOARD_NAME = 'ZaXF' 
 
 @st.cache_data
 def get_driver():
@@ -38,6 +30,13 @@ driver = get_driver()
 
 @st.cache_data
 def get_raw_data(driver):
+    recomm =[]
+    titles = []
+    clicks = []
+    article_id = []
+    regdate = []
+    CAFE_NAME = 'umamusume-kor' 
+    REQ_BOARD_NAME = 'ZaXF' 
     page = driver.get(f'https://cafe.daum.net/umamusume-kor/{REQ_BOARD_NAME}')
     driver.switch_to.frame("down")
     driver.find_element(By.XPATH,'//*[@id="primaryContent"]/div/div[1]/div[2]/div[3]/div[1]/label').click()
@@ -86,7 +85,7 @@ st.write("Recent Raw Data... ")
 st.write(df)
 
 
-list_of_titles= '\n'.join(titles)
+list_of_titles= '\n'.join(df['titles'])
 
 contents = f"""
 
