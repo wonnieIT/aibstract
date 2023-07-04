@@ -3,6 +3,7 @@ from streamlit_extras.app_logo import add_logo
 from st_pages import Page, Section, show_pages, add_page_title
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup
 import pandas as pd
 import time
@@ -24,8 +25,8 @@ CAFE_NAME = 'umamusume-kor'
 # 까페 이름을 넣어준다. 예제는 이종격투기... 
 
 REQ_BOARD_NAME = 'ZaXF' 
-
-driver = webdriver.Chrome('./../chromedriver')
+options = webdriver.ChromeOptions()
+driver = webdriver.Chrome(options=options)
 
 page = driver.get(f'https://cafe.daum.net/umamusume-kor/{REQ_BOARD_NAME}')
 
