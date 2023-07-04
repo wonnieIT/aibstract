@@ -11,7 +11,7 @@ import pandas as pd
 import time
 import openai
 
-openai.api_key = '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'
+openai.api_key = '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'
 with st.spinner('Loading.. Data...'):
     time.sleep(10)
 st.success('Done!')
