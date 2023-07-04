@@ -4,6 +4,8 @@ from st_pages import Page, Section, show_pages, add_page_title
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
+
 from bs4 import BeautifulSoup
 import pandas as pd
 import time
@@ -22,11 +24,21 @@ article_id = []
 regdate = []
 
 CAFE_NAME = 'umamusume-kor' 
-# 까페 이름을 넣어준다. 예제는 이종격투기... 
-
 REQ_BOARD_NAME = 'ZaXF' 
-options = webdriver.ChromeOptions()
-driver = webdriver.Chrome(options=options)
+
+@st.experimental_singleton
+def get_driver():
+    return webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+
+options = Options()
+options.add_argument('--disable-gpu')
+options.add_argument('--headless')
+driver = get_driver()
+
+
+
+# options = webdriver.ChromeOptions()
+# driver = webdriver.Chrome(options=options)
 
 page = driver.get(f'https://cafe.daum.net/umamusume-kor/{REQ_BOARD_NAME}')
 
