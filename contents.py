@@ -25,50 +25,51 @@ else:
 col1, col2 = st.columns(2)
 col3, col4 = st.columns(2)
 with col1:
-    st_lottie(url_json, width =300)
+    st_lottie(url_json, width =350)
 
 with col2:
-    st.subheader('AIbstract를 소개합니다')
+    st.subheader('👋🏻AIbstract를 소개합니다')
     st.write("""
-    AI + Abstract 를 줄임말으로 
+    **AI + Abstract**의 줄임 말으로 
     AI가 공식 웹사이트를 요약해주는 서비스입니다.😄 
-    게임 운영에 있어 사람들의 의견이 무엇인지 반영하는 것은 
-    중요해보이는데요!! 공식 웹사이트 데이터를 반영하려고 하는데, 
-    일일이 들어가기 번거롭거나 한 곳에 모아서 보고 싶을 때! 부족하지만,, 저를 찾아주세요. 
-    """)
+    물론 로그와 정형화된 데이터도 중요하겠지만, 유저들이 공식 홈페이지에 작성하는 의견들도 꽤 게임을 운영하고
+    이탈을 방지하는 데에 중요해 보이는데요...""")
+    st.write("✔️ 이런 비정형 데이터를 로그와 함께 분석에 활용하고 싶거나 여론을 확인하고 싶을 때!")
+    st.write("✔️ 일일이 사이트에 파도타고 들어가기 번거롭거나 한 곳에 모아서 보고 싶을 때! ")
+    st.write("부족하지만,, 저를 찾아주세요")
 
 with col3:
     st.markdown(
         """
         ### 🎈 Motivation
         * 게임 유저들의 피드백 데이터를 활용해보고 싶다.
+            * 꽤나 이탈 방지에 중요한 비정형 데이터...?  
         * GPT 활용해보고 싶다.
             * 보이지는 않지만 나보다 더 빨리 코딩...?
-        * 재밌는 UI 기능 활용해보고 싶다. 
+        * 재밌는 low-code UI 만들어 보고 싶다. 
             * [streamlit 공식 문서](https://docs.streamlit.io/).
+            * [UI 비교](https://plotly.com/comparing-dash-shiny-streamlit/)
+
     """)
     
 with col4: 
 
+    st.markdown("""### ⏰ Tools """) 
     st.markdown("""
-        ### ⏰ Process
-        1. Test 과정 
-        * 웹 스크랩 test 
-        * 데이터 확인 
-        * GPT API 사용 test 
-        * UI 구현 test 
-
-        2. 컨텐츠 정리
-        
-        3. Code 를 Application 으로 .. 😳
-        
+        * only 🐍PYTHON🐍
+        * Libraries: selenium, streamlit, pandas, openai 📚 
+        * Open AI key🔑  
+        * Deployment: Github
+            > 추후에 개발된다면 k8s!              
         """)
+    
 st.markdown("""
 
     ### ✍️ Final Thoughts
     - db가 없어서 데이터 한정적, slow 
     - streamlit 되게 편해서 좋았다, streamlit snowflake와 연동해서 간단한 app 구축 가능성 확인
-    - gpt의 요약 기능 👍🏻, 하지만 상세한 분석은 ...？
+    - gpt의 요약 기능 👍🏻, 하지만 상세한 분석은 ...？ 
+        - 어떻게 한지도 모르겠고,, 가끔 직관적으로 맞지 않기도
     
 
     """)
@@ -77,4 +78,5 @@ st.markdown("""
 
 result = st.button("Let's get started!!")
 if result:
+
     st.balloons()
