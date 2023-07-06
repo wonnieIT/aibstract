@@ -18,7 +18,7 @@ openai.api_key = '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'
 
 add_selectbox = st.sidebar.selectbox(
     "게임을 선택하세요",
-    ("우마무스메", "오딘", "아키에이지워", "에버소울")
+    ("우마무스메", "오딘", "아키에이지워", "가디언테일즈")
 )
 
 # Using "with" notation
@@ -47,7 +47,8 @@ if show:
         "우마무스메" : ["umamusume-kor", "ZaXF", "Z4oy", "https://img1.daumcdn.net/thumb/C151x151/?fname=https%3A%2F%2Ft1.daumcdn.net%2Fcafeattach%2F1ZK1D%2F5c0477e8a6bfb94974136c978f5e2522dc17b29e"],
         "오딘" : ["odin", "DEIV", "D034", "https://img1.daumcdn.net/thumb/C151x151/?fname=https%3A%2F%2Ft1.daumcdn.net%2Fcafeattach%2F1YvZ5%2Fabe49aa5aeb26dc71c157eef3bcf105bac519759"],
         "아키에이지워" : ["ArcheAgeWar", "aaTV","ZmF6", "https://img1.daumcdn.net/thumb/C151x151/?fname=https%3A%2F%2Ft1.daumcdn.net%2Fcafeattach%2F1ZOrf%2F26e8c4ce3b61a009d776c42eeadb7646e250f494"],
-        "에버소울": ["Eversoul", "aCex", "Zkxr", "https://img1.daumcdn.net/thumb/C151x151/?fname=https%3A%2F%2Ft1.daumcdn.net%2Fcafeattach%2F1ZLyF%2F2d4d47292e41f06e4163d2f20a9a66bca6394c3e"]
+        "에버소울": ["Eversoul", "aCex", "Zkxr", "https://img1.daumcdn.net/thumb/C151x151/?fname=https%3A%2F%2Ft1.daumcdn.net%2Fcafeattach%2F1ZLyF%2F2d4d47292e41f06e4163d2f20a9a66bca6394c3e"],
+        "가디언테일즈": ["GuardianTales","AgPy","ARz6","https://img1.daumcdn.net/thumb/C151x151/?fname=https%3A%2F%2Ft1.daumcdn.net%2Fcafeattach%2F1YmAL%2F2fbe0cff9c7614a9f7750edb31a9735b37bd14a8"]
     }
     
     limit_map = {
@@ -76,7 +77,7 @@ if show:
         html = driver.page_source
         soup = BeautifulSoup(html, 'html.parser') 
         profile = soup.select('#cafeProfileImage > img')[0]['src']
-        add_logo(profile)
+
 
         post_titles = soup.find_all('a', {'class': 'txt_item'})
         article_num = soup.find_all('div',{'class':'wrap_num'})
@@ -171,21 +172,21 @@ if show:
 
 
 
-    if add_selectbox == "에버소울":
+    if add_selectbox in ("에버소울","가디언테일즈"):
         df = get_raw_data(mappings[add_selectbox][0],mappings[add_selectbox][bdex], limit_map[limit])
         add_specific_contents(df)
         add_summary(df)
         sent_cmd = f"""
 
-                아래 전달하는 list는 게임 건의 제목이야.
-                각각의 sentiment analysis를 해서 -1과 1 사이의 값을 설명 없이 length가 list와 동일한 python list로 전달해줘. 
+                아래 전달하는 list는 게임 건의 제목인데, 각각 sentiment analysis를 해서 -1과 1 사이의 값을 설명 없이 length가 50인 python list로 설몀 없이  전달해줘. 
 
                 {df['titles']}
                 """
-        sentiments = get_answers_from_gpt(sent_cmd,0.3)
+        sentiments = get_answers_from_gpt(sent_cmd,0.5)
         sentiments=ast.literal_eval(sentiments)
         print(sentiments)
-        df['sentiments'] = sentiments
+        if len(sentiments) ==50:
+            df['sentiments'] = sentiments
         df.to_csv(f'{mappings[add_selectbox][0]}-{mappings[add_selectbox][bdex]}.csv')
 
     else: 
