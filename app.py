@@ -33,8 +33,6 @@ with st.sidebar:
     )
     show = st.button("결과 보기")
 
-
-
 if show:
     st.header(f'🤖 GPT 관점의 {add_selectbox} {board_type} 게시판 ')    
 
@@ -46,10 +44,10 @@ if show:
 
 
     mappings = {
-        "우마무스메" : ["umamusume-kor", "ZaXF", "Z4oy"],
-        "오딘" : ["odin", "DEIV", "D034"],
-        "아키에이지워" : ["ArcheAgeWar", "aaTV","ZmF6"],
-        "에버소울": ["Eversoul", "aCex", "Zkxr"]
+        "우마무스메" : ["umamusume-kor", "ZaXF", "Z4oy", "https://img1.daumcdn.net/thumb/C151x151/?fname=https%3A%2F%2Ft1.daumcdn.net%2Fcafeattach%2F1ZK1D%2F5c0477e8a6bfb94974136c978f5e2522dc17b29e"],
+        "오딘" : ["odin", "DEIV", "D034", "https://img1.daumcdn.net/thumb/C151x151/?fname=https%3A%2F%2Ft1.daumcdn.net%2Fcafeattach%2F1YvZ5%2Fabe49aa5aeb26dc71c157eef3bcf105bac519759"],
+        "아키에이지워" : ["ArcheAgeWar", "aaTV","ZmF6", "https://img1.daumcdn.net/thumb/C151x151/?fname=https%3A%2F%2Ft1.daumcdn.net%2Fcafeattach%2F1ZOrf%2F26e8c4ce3b61a009d776c42eeadb7646e250f494"],
+        "에버소울": ["Eversoul", "aCex", "Zkxr", "https://img1.daumcdn.net/thumb/C151x151/?fname=https%3A%2F%2Ft1.daumcdn.net%2Fcafeattach%2F1ZLyF%2F2d4d47292e41f06e4163d2f20a9a66bca6394c3e"]
     }
     
     limit_map = {
@@ -146,6 +144,12 @@ if show:
                 contents.append(texts.replace(u'\xa0', u' ').lstrip())
         df['contents']=contents
         return contents
+    
+
+    @st.cache_data
+    def convert_df(df):
+        # IMPORTANT: Cache the conversion to prevent computation on every rerun
+        return df.to_csv().encode('utf-8')
 
     @st.cache_data
     def add_summary(df):
@@ -167,8 +171,8 @@ if show:
 
 
 
-    if add_selectbox == "오딘" and board_type == "자유":
-        df = get_raw_data(mappings[add_selectbox][0],mappings[add_selectbox][2], limit_map[limit])
+    if add_selectbox == "에버소울":
+        df = get_raw_data(mappings[add_selectbox][0],mappings[add_selectbox][bdex], limit_map[limit])
         add_specific_contents(df)
         add_summary(df)
         sent_cmd = f"""
@@ -182,10 +186,12 @@ if show:
         sentiments=ast.literal_eval(sentiments)
         print(sentiments)
         df['sentiments'] = sentiments
+        df.to_csv(f'{mappings[add_selectbox][0]}-{mappings[add_selectbox][bdex]}.csv')
+
     else: 
         df = pd.read_csv(f'{mappings[add_selectbox][0]}-{mappings[add_selectbox][bdex]}.csv')
 
-
+    add_logo(mappings[add_selectbox][3])
     # TOO SLOW 
     # if board_type == '자유':
     #     df = get_raw_data(mappings[add_selectbox][0],mappings[add_selectbox][2], limit_map[limit])
@@ -213,9 +219,9 @@ if show:
 
     date_count = df.groupby(df['regdate']).size().reset_index(name='Count')
     
-    st.markdown("### 건의함 5가지 시사점")
+    st.markdown(f"### {board_type} 게시판 5가지 시사점")
     issues = get_answers_from_gpt(f"""
-            아래는 건의함 내용들인데 주요 건의 사항 5가지로 요약해서 알려줘.  
+            아래는 건의함 내용들인데 주요 건의 사항 5가지로 요약하고 시사점을 알려줘.  
             {df['titles']}
             """, 0.8)
     st.write(issues) 
@@ -223,11 +229,11 @@ if show:
 
     hot_issues = df.sort_values(by=['views','recommendations'],ascending=False)[:10]
     st.markdown("### 조회수, 추천수 높은!")
-    st.write(hot_issues[["link","titles","summary"]]) 
+    st.write(hot_issues[["titles","summary","link"]]) 
 
 
     with col1:
-        st.markdown("### 건의함 현황")
+        st.markdown("### 등록 글 현황")
         st.line_chart(date_count, x='regdate',y='Count')
 
         
@@ -235,7 +241,7 @@ if show:
   
 
     with col2:
-        st.markdown("### 건의함 빈도 높은 키워드")
+        st.markdown("### 빈도 높은 키워드")
         keywords = get_answers_from_gpt(f"""
         아래는 게임 건의함 내용들인데 빈도가 높은 단어 다섯가지와 빈도 퍼센트를 알려줘.
         {df['titles']}
@@ -243,10 +249,17 @@ if show:
         st.write(keywords) 
 
 
-    st.markdown("### 최신 데이터")
-    st.write(df)
+    st.markdown("### 최근 데이터")
+    csv = convert_df(df)
+    st.download_button(
+        label="csv로 다운받기",
+        data=csv,
+        file_name=f'{mappings[add_selectbox][0]}-{mappings[add_selectbox][bdex]}.csv',
+        mime='text/csv',
+    )
+    st.write(df[['id','titles','contents','regdate','summary','sentiments','author','link']])
 
-    st.markdown("### 건의함 sentiment analysis")
+    st.markdown("### Sentiment Analysis")
     sentiment_count = df.groupby(df['sentiments']).size().reset_index(name='Count')
     s_data = alt.Chart(df[["sentiments","regdate",'titles']]).mark_circle().encode(
         x='regdate', y='sentiments', size='sentiments', color='sentiments')
