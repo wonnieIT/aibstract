@@ -18,7 +18,7 @@ openai.api_key = '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'
 
 add_selectbox = st.sidebar.selectbox(
     "게임을 선택하세요",
-    ("우마무스메", "오딘", "아키에이지워", "가디언테일즈")
+    ("우마무스메", "오딘", "아키에이지워")
 )
 
 # Using "with" notation
