@@ -25,7 +25,7 @@ add_selectbox = st.sidebar.selectbox(
 with st.sidebar:
     limit = st.radio(
         "최근 데이터 수",
-        ("10","20","30", "40", "50")
+        ("10", "50")
     )
     board_type = st.radio(
         "게시판 종류",
