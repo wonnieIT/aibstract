@@ -31,7 +31,7 @@ with col1:
     st_lottie(url_json, width =375)
 
 with col2:
-    st.subheader('👋🏻AIbstract를 소개합니다')
+    st.subheader('👋🏻Aibstract를 소개합니다')
     st.write("""
     **AI + Abstract**의 줄임 말으로 
     AI가 공식 웹사이트를 요약해주는 서비스입니다.😄 
