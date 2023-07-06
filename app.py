@@ -258,7 +258,7 @@ if show:
         file_name=f'{mappings[add_selectbox][0]}-{mappings[add_selectbox][bdex]}.csv',
         mime='text/csv',
     )
-    st.write(df[['id','titles','contents','regdate','summary','sentiments','author','link']])
+    st.write(df[['id','titles','contents','regdate','summary','sentiments','link']])
 
     st.markdown("### Sentiment Analysis")
     sentiment_count = df.groupby(df['sentiments']).size().reset_index(name='Count')
