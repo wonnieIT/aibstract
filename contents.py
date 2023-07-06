@@ -8,8 +8,11 @@ import json
 import requests
 from streamlit_lottie import st_lottie
 
+
+
 add_logo("main.png")
 st.title("2023 July Project - Wonnie")
+st.caption('OpenAI Api, Streamlit 탐방기')
 url = requests.get(
     "https://assets1.lottiefiles.com/packages/lf20_G6Lxp3nm1p.json")
 # Creating a blank dictionary to store JSON file,
@@ -25,7 +28,7 @@ else:
 col1, col2 = st.columns(2)
 col3, col4 = st.columns(2)
 with col1:
-    st_lottie(url_json, width =350)
+    st_lottie(url_json, width =375)
 
 with col2:
     st.subheader('👋🏻AIbstract를 소개합니다')
@@ -74,7 +77,11 @@ st.markdown("""
 
     """)
 
+st.markdown("""
 
+    ### 👀 ETC
+    - 데이터 분석랩 Query Assistant👩🏻‍🏫
+    """)
 
 result = st.button("Let's get started!!")
 if result:
