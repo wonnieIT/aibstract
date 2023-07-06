@@ -1,8 +1,15 @@
 import streamlit as st
 from pathlib import Path
 import base64
+import pandas as pd
+from io import StringIO
+import openai
+from streamlit_chat import message
+
 
 # Initial page config
+openai.api_key = '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'
+
 
 st.set_page_config(
      page_title='❄️ Snowflake cheat sheet',
@@ -30,15 +37,9 @@ def cs_sidebar():
     st.sidebar.markdown('''[<img src='data:image/png;base64,{}' class='img-fluid' width=32 height=32>](https://streamlit.io/)'''.format(img_to_bytes("logo.png")), unsafe_allow_html=True)
     st.sidebar.header('Kakaogames Datalab cheat sheet')
 
-    st.sidebar.markdown('''
-<small>Summary of the [docs](https://docs.streamlit.io/en/stable/api.html), as of [Streamlit v1.8.0](https://www.streamlit.io/).</small>
-    ''', unsafe_allow_html=True)
-
     st.sidebar.markdown('Where? ❄️[Snowflake](https://uy06499.ap-northeast-2.aws.snowflakecomputing.com/oauth/authorize?client_id=oVF2zWn9aH4MEex%2FtbFkqc%2BvJvhJkQ%3D%3D&display=popup&redirect_uri=https%3A%2F%2Fapps-api.c1.ap-northeast-2.aws.app.snowflake.com%2Fcomplete-oauth%2Fsnowflake&response_type=code&scope=refresh_token&state=%7B%22browserUrl%22%3A%22https%3A%2F%2Fapp.snowflake.com%2Frlpfjsg%2Fis42076%2Fworksheets%22%2C%22csrf%22%3A%2286711015%22%2C%22isSecondaryUser%22%3Afalse%2C%22oauthNonce%22%3A%223mr412bZpJ4%22%2C%22url%22%3A%22https%3A%2F%2Fuy06499.ap-northeast-2.aws.snowflakecomputing.com%22%2C%22windowId%22%3A%220d99135a-2f39-4966-b6f4-67a196a2e682%22%7D)')
 
-
     st.sidebar.markdown('How? ⌨ [SQL](https://ko.wikipedia.org/wiki/SQL)')
-    st.sidebar.code('>>> import streamlit as st')
 
     st.sidebar.markdown('What? 📉 [Our Datahub](https://dlk-datahub.kakaogames.io/)')
     st.sidebar.code('''
@@ -59,6 +60,43 @@ def cs_sidebar():
 
 def cs_body():
     # Magic commands
+
+    def generate_response(prompt):
+        completions = openai.Completion.create (
+            engine="text-davinci-003",
+            prompt=prompt,
+            max_tokens=1024,
+            stop=None,
+            temperature=0.5,
+            top_p=1,
+        )
+    
+        message = completions["choices"][0]["text"].replace("\n", "")
+        return message
+
+    st.subheader("👩🏻‍🏫 Datalab Query Assistant")
+    if 'generated' not in st.session_state:
+        st.session_state['generated'] = []
+    
+    if 'past' not in st.session_state:
+        st.session_state['past'] = []
+    
+    with st.form('form', clear_on_submit=True):
+        user_input = st.text_input('퀴리를 입력하세요.', '', key='input')
+        submitted = st.form_submit_button('Send')
+    
+    if submitted and user_input:
+        output = generate_response("이 SQL 쿼리를 설명해줘. "+user_input)
+        st.session_state.past.append(user_input)
+        st.session_state.generated.append(output)
+    
+    if st.session_state['generated']:
+        for i in range(len(st.session_state['generated'])-1, -1, -1):
+            message(st.session_state['past'][i], is_user=True, key=str(i) + '_user')
+            message(st.session_state["generated"][i], key=str(i))
+
+
+
 
     col1, col2 = st.columns(2)
 
