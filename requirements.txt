@@ -8,3 +8,4 @@ webdriver-manager
 seleniumbase
 streamlit-lottie
 streamlit-timeline
+streamlit-chat
