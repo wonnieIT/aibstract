@@ -12,7 +12,7 @@ openai.api_key = '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'
 
 
 st.set_page_config(
-     page_title='❄️ Snowflake cheat sheet',
+     page_title='Datalab Cheat Sheet',
      layout="wide",
      initial_sidebar_state="expanded",
 )
