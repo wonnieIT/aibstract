@@ -183,7 +183,7 @@ if show:
         print(sentiments)
         df['sentiments'] = sentiments
     else: 
-        df = pd.read_csv(f'/Users/kakaogames/Desktop/projects/230708/{mappings[add_selectbox][0]}-{mappings[add_selectbox][bdex]}.csv')
+        df = pd.read_csv(f'{mappings[add_selectbox][0]}-{mappings[add_selectbox][bdex]}.csv')
 
 
     # TOO SLOW 
