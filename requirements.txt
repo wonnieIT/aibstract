@@ -3,6 +3,8 @@ pandas
 streamlit-extras
 bs4
 openai
-st_pages
+st-pages
 webdriver-manager
 seleniumbase
+streamlit-lottie
+streamlit-timeline
