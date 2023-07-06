@@ -34,7 +34,7 @@ with st.sidebar:
     show = st.button("결과 보기")
 
 if show:
-    st.header(f'🤖 GPT 관점의 {add_selectbox} {board_type} 게시판 ')    
+    st.header(f'🤖{add_selectbox} {board_type} 게시판 by Aibstract ')    
 
     col1, col2 = st.columns(2)
     if board_type=="건의":
